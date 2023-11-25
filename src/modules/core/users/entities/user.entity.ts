@@ -14,6 +14,8 @@ export class User implements PrismaUser {
   @ApiProperty({ enum: ROLE })
   role: ROLE;
 
+  password: string;
+
   createdAt: Date;
   updatedAt: Date;
 }

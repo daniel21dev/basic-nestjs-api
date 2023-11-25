@@ -191,8 +191,8 @@ export class TasksService {
     return `This action returns a #${id} task`;
   }
 
-  update(id: string, updateTaskDto: UpdateTaskDto) {
-    const taskExists = this.prisma.task.findUnique({
+  async update(id: string, updateTaskDto: UpdateTaskDto) {
+    const taskExists = await this.prisma.task.findUnique({
       where: {
         id,
       },
@@ -208,7 +208,7 @@ export class TasksService {
     const update = {};
 
     if (updateTaskDto.addAssigneeId) {
-      const assignee = this.prisma.user.findUnique({
+      const assignee = await this.prisma.user.findUnique({
         where: {
           id: updateTaskDto.addAssigneeId,
         },
@@ -229,7 +229,7 @@ export class TasksService {
     }
 
     if (updateTaskDto.removeAssigneeId) {
-      const UserTask = this.prisma.userTask.findFirst({
+      const UserTask = await this.prisma.userTask.findFirst({
         where: {
           taskId: id,
           userId: updateTaskDto.removeAssigneeId,
@@ -262,7 +262,7 @@ export class TasksService {
   }
 
   async remove(id: string) {
-    const taskExists = this.prisma.task.findUnique({
+    const taskExists = await this.prisma.task.findUnique({
       where: {
         id,
       },

@@ -8,13 +8,16 @@ import {
   Delete,
   Query,
 } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { QueryUserDto, UsersDto } from './dto/search-user.dto';
+import { Roles } from '@/decorators/roles.decorator';
 
 @ApiTags('users')
+@ApiBearerAuth()
+@Roles('ADMIN')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -41,11 +44,6 @@ export class UsersController {
   @Get()
   findAll(@Query() searchUserDto: QueryUserDto) {
     return this.usersService.findAll(searchUserDto);
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
   }
 
   @Patch(':id')

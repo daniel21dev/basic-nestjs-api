@@ -65,6 +65,7 @@ export class UsersService {
 
     return users.map(({ UserTask, ...user }) => {
       const tasks = UserTask.map(({ task }) => task);
+      delete user.password;
       return {
         ...user,
         totalTasks: tasks.length,
@@ -74,8 +75,12 @@ export class UsersService {
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  findOne(email: string) {
+    return this.prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
