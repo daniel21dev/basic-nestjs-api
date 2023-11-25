@@ -1,7 +1,9 @@
 import { ROLE } from '@prisma/client';
 import { IsInt, IsPositive, IsEnum, IsOptional } from 'class-validator';
 import { Type } from 'class-transformer';
-export class SearchUserDto {
+import { User } from '../entities/user.entity';
+
+export class QueryUserDto {
   name?: string;
   email?: string;
   @IsOptional()
@@ -18,4 +20,10 @@ export class SearchUserDto {
   @IsPositive()
   @Type(() => Number)
   limit?: number;
+}
+
+export class UsersDto extends User {
+  totalTasks: number;
+  totalTimeSpent: number;
+  totalTasksCompleted: number;
 }

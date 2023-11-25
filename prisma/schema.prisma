@@ -20,7 +20,7 @@ model User {
 model Task {
   id        String   @id @default(uuid())
   title     String
-  completed Boolean  @default(false)
+  status    STATUS   @default(TODO)
   cost      Int      @default(0)
   timeSpend Int      @default(0)
   createdAt DateTime @default(now())
@@ -32,4 +32,10 @@ model Task {
 enum ROLE {
   ADMIN
   MEMBER
+}
+
+enum STATUS {
+  TODO
+  IN_PROGRESS
+  DONE
 }

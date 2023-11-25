@@ -1,9 +1,8 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
-
+import { PrismaService } from '@/modules/shared/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { PrismaService } from '@/modules/shared/prisma/prisma.service';
-import { SearchUserDto } from './dto/search-user.dto';
+import { QueryUserDto } from './dto/search-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -25,7 +24,7 @@ export class UsersService {
     return this.prisma.user.create({ data: createUserDto });
   }
 
-  async findAll({ name, email, role, page = 1, limit = 10 }: SearchUserDto) {
+  async findAll({ name, email, role, page = 1, limit = 10 }: QueryUserDto) {
     const filters = {};
 
     if (name) {
@@ -50,9 +49,24 @@ export class UsersService {
       where: filters,
       skip: (+page - 1) * +limit,
       take: +limit,
+      include: {
+        tasks: {
+          select: {
+            timeSpend: true,
+            status: true,
+          },
+        },
+      },
     });
 
-    return users;
+    return users.map(({ tasks, ...user }) => {
+      return {
+        ...user,
+        totalTasks: tasks.length,
+        totalTimeSpend: tasks.reduce((acc, task) => acc + task.timeSpend, 0),
+        totalTasksCompleted: tasks.filter((task) => task.status === 'DONE'),
+      };
+    });
   }
 
   findOne(id: number) {
