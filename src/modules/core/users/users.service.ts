@@ -50,16 +50,21 @@ export class UsersService {
       skip: (+page - 1) * +limit,
       take: +limit,
       include: {
-        tasks: {
+        UserTask: {
           select: {
-            timeSpend: true,
-            status: true,
+            task: {
+              select: {
+                status: true,
+                timeSpend: true,
+              },
+            },
           },
         },
       },
     });
 
-    return users.map(({ tasks, ...user }) => {
+    return users.map(({ UserTask, ...user }) => {
+      const tasks = UserTask.map(({ task }) => task);
       return {
         ...user,
         totalTasks: tasks.length,

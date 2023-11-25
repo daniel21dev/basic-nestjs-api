@@ -8,25 +8,37 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
+  id        String     @id @default(uuid())
+  email     String     @unique
   name      String?
   role      ROLE
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  tasks     Task[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  UserTask  UserTask[]
 }
 
 model Task {
+  id           String     @id @default(uuid())
+  title        String
+  description  String?
+  status       STATUS     @default(TODO)
+  cost         Int        @default(0)
+  timeSpend    Int        @default(0)
+  timeEstimate Int?
+  dueDate      DateTime?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  UserTask     UserTask[]
+}
+
+model UserTask {
   id        String   @id @default(uuid())
-  title     String
-  status    STATUS   @default(TODO)
-  cost      Int      @default(0)
-  timeSpend Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  assignee  User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+  task      Task     @relation(fields: [taskId], references: [id])
   userId    String
+  taskId    String
 }
 
 enum ROLE {
