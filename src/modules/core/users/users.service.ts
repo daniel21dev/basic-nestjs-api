@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
+
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '@/modules/shared/prisma/prisma.service';
@@ -8,11 +9,23 @@ import { SearchUserDto } from './dto/search-user.dto';
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto) {
+    const emailExists = await this.prisma.user.findUnique({
+      where: {
+        email: createUserDto.email,
+      },
+    });
+
+    if (emailExists) {
+      throw new BadRequestException(
+        `Email ${createUserDto.email} already exists`,
+      );
+    }
+
     return this.prisma.user.create({ data: createUserDto });
   }
 
-  async findAll({ name, email, role }: SearchUserDto, page = 1, limit = 10) {
+  async findAll({ name, email, role, page = 1, limit = 10 }: SearchUserDto) {
     const filters = {};
 
     if (name) {
@@ -35,8 +48,8 @@ export class UsersService {
 
     const users = await this.prisma.user.findMany({
       where: filters,
-      skip: (page - 1) * limit,
-      take: limit,
+      skip: (+page - 1) * +limit,
+      take: +limit,
     });
 
     return users;

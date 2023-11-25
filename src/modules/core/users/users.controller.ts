@@ -8,11 +8,13 @@ import {
   Delete,
   Query,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { SearchUserDto } from './dto/search-user.dto';
 
+@ApiTags('users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -23,12 +25,8 @@ export class UsersController {
   }
 
   @Get()
-  findAll(
-    @Body() searchUserDto: SearchUserDto,
-    @Query('page') page = 1,
-    @Query('limit') limit = 10,
-  ) {
-    return this.usersService.findAll(searchUserDto, +page, +limit);
+  findAll(@Query() searchUserDto: SearchUserDto) {
+    return this.usersService.findAll(searchUserDto);
   }
 
   @Get(':id')
