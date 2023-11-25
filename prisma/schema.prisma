@@ -11,6 +11,7 @@ model User {
   id        String   @id @default(uuid())
   email     String   @unique
   name      String?
+  role      ROLE
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   tasks     Task[]
@@ -26,4 +27,9 @@ model Task {
   updatedAt DateTime @updatedAt
   assignee  User     @relation(fields: [userId], references: [id])
   userId    String
+}
+
+enum ROLE {
+  ADMIN
+  MEMBER
 }
