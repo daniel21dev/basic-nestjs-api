@@ -15,6 +15,7 @@ import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { QueryTaskDto } from './dto/query-task.dto';
 import { Task } from './entities/task.entity';
 import { AnalyticsDto, QueryAnalytics } from './dto/analytics.dto';
+import { Roles } from '@/decorators/roles.decorator';
 
 @ApiTags('tasks')
 @ApiBearerAuth()
@@ -69,6 +70,7 @@ export class TasksController {
     return this.tasksService.update(id, updateTaskDto);
   }
 
+  @Roles('ADMIN')
   @ApiResponse({
     status: 200,
     description: 'The record has been successfully deleted.',
