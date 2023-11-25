@@ -1,7 +1,8 @@
-import { ROLE } from '@prisma/client';
+import { User } from '../entities/user.entity';
+import { OmitType } from '@nestjs/swagger';
 
-export class CreateUserDto {
-  name: string;
-  email: string;
-  role: ROLE;
-}
+export class CreateUserDto extends OmitType(User, [
+  'id',
+  'createdAt',
+  'updatedAt',
+]) {}
