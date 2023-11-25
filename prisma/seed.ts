@@ -3,10 +3,11 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
+  // ! DO NOT USE THIS IN PRODUCTION
   const data: any = {
     name: 'Jhon Doe',
     email: 'jhon@mail.com',
-    password: '123456',
+    password: '$2b$10$naoVc73wgNAnqN57kI3rXu5JfJPXEOGdRZ3HLGbd6/AhtAhKWaQY2',
     role: 'ADMIN',
   };
 

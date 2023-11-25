@@ -1,4 +1,5 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 import { PrismaService } from '@/modules/shared/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -21,7 +22,19 @@ export class UsersService {
       );
     }
 
-    return this.prisma.user.create({ data: createUserDto });
+    const { password, ...data } = createUserDto;
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = await this.prisma.user.create({
+      data: {
+        ...data,
+        password: hashedPassword,
+      },
+    });
+
+    delete user.password;
+
+    return user;
   }
 
   async findAll({ name, email, role, page = 1, limit = 10 }: QueryUserDto) {
