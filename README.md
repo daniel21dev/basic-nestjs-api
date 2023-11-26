@@ -16,6 +16,8 @@
 
 3. Create/Migrate Database schema: `npx prisma migrate dev`
 
+   - Seed database `npx prisma db seed`
+
 4. Run project:
 
    - Development mode: `npm run start:dev`
