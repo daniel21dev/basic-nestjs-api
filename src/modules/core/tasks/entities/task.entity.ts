@@ -27,7 +27,6 @@ export class Task implements PrismaTaks {
   @Type(() => Number)
   cost: number;
   @IsInt()
-  @IsPositive()
   @Type(() => Number)
   timeSpend: number;
   @IsInt()

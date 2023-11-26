@@ -42,18 +42,38 @@ export class TasksService {
   async findAll(query: QueryTaskDto) {
     const filters = {};
 
-    if (query.startDate && query.endDate) {
-      filters['createdAt'] = {
-        gte: query.startDate,
-        lte: query.endDate,
-      };
+    if (query.startDate || query.endDate) {
+      if (query.startDate && query.endDate) {
+        filters['createdAt'] = {
+          gte: query.startDate,
+          lte: query.endDate,
+        };
+      } else if (query.startDate) {
+        filters['createdAt'] = {
+          gte: query.startDate,
+        };
+      } else if (query.endDate) {
+        filters['createdAt'] = {
+          lte: query.endDate,
+        };
+      }
     }
 
-    if (query.startDueDate && query.endDueDate) {
-      filters['dueDate'] = {
-        gte: query.startDueDate,
-        lte: query.endDueDate,
-      };
+    if (query.startDueDate || query.endDueDate) {
+      if (query.startDueDate && query.endDueDate) {
+        filters['dueDate'] = {
+          gte: query.startDueDate,
+          lte: query.endDueDate,
+        };
+      } else if (query.startDueDate) {
+        filters['dueDate'] = {
+          gte: query.startDueDate,
+        };
+      } else if (query.endDueDate) {
+        filters['dueDate'] = {
+          lte: query.endDueDate,
+        };
+      }
     }
 
     if (query.status) {
@@ -245,10 +265,13 @@ export class TasksService {
 
       update['UserTask'] = {
         delete: {
-          userId: updateTaskDto.removeAssigneeId,
+          id: UserTask.id,
         },
       };
     }
+
+    delete updateTaskDto.addAssigneeId;
+    delete updateTaskDto.removeAssigneeId;
 
     return this.prisma.task.update({
       where: {
