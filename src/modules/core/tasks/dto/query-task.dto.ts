@@ -10,9 +10,12 @@ import {
 } from 'class-validator';
 
 export class QueryTaskDto {
+  @IsOptional()
   startDate?: Date;
   endDate?: Date;
+  @IsOptional()
   startDueDate?: Date;
+  @IsOptional()
   endDueDate?: Date;
 
   @IsEnum(STATUS)

@@ -41,17 +41,23 @@ export class UsersService {
     const filters = {};
 
     if (name) {
-      filters['name'] = {
-        contains: name,
-        mode: 'insensitive',
-      };
+      if (!filters['OR']) filters['OR'] = [];
+      filters['OR'].push({
+        name: {
+          contains: name,
+          mode: 'insensitive',
+        },
+      });
     }
 
     if (email) {
-      filters['email'] = {
-        contains: email,
-        mode: 'insensitive',
-      };
+      if (!filters['OR']) filters['OR'] = [];
+      filters['OR'].push({
+        email: {
+          contains: email,
+          mode: 'insensitive',
+        },
+      });
     }
 
     if (role) {
@@ -69,6 +75,7 @@ export class UsersService {
               select: {
                 status: true,
                 timeSpend: true,
+                cost: true,
               },
             },
           },
@@ -78,12 +85,19 @@ export class UsersService {
 
     return users.map(({ UserTask, ...user }) => {
       const tasks = UserTask.map(({ task }) => task);
+      const completedTasks = tasks.filter((task) => task.status === 'DONE');
+
       delete user.password;
+
       return {
         ...user,
         totalTasks: tasks.length,
         totalTimeSpend: tasks.reduce((acc, task) => acc + task.timeSpend, 0),
-        totalTasksCompleted: tasks.filter((task) => task.status === 'DONE'),
+        totalTasksCompleted: completedTasks.length,
+        totalCostTasksCompleted: completedTasks.reduce(
+          (acc, task) => acc + task.cost,
+          0,
+        ),
       };
     });
   }

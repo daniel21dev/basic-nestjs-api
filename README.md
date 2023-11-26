@@ -6,7 +6,7 @@
 2. Set environment variables:
 
    - Copy .example.nev and rename it as .env and set your own variables.
-   - (optional) You can setup a database using the "docker-postgres.yml" file, just run `docker-compose -f .\docker-postgres.yml up -d `
+   - (optional) You can setup a database using the "docker-postgres.yml" file, just run `docker-compose -f .\docker-postgres.yml up -d`
 
 3. Create/Migrate Database schema: `npx prisma migrate dev`
 

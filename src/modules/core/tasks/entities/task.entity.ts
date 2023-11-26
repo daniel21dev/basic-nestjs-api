@@ -6,11 +6,13 @@ import {
   IsInt,
   IsOptional,
   IsPositive,
+  IsUUID,
   MaxLength,
   MinLength,
 } from 'class-validator';
 
 export class Task implements PrismaTaks {
+  @IsUUID()
   id: string;
   @MinLength(3)
   @MaxLength(50)
@@ -33,6 +35,8 @@ export class Task implements PrismaTaks {
   @IsPositive()
   @Type(() => Number)
   timeEstimate: number;
+  @IsOptional()
   createdAt: Date;
+  @IsOptional()
   updatedAt: Date;
 }

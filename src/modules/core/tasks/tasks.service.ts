@@ -45,16 +45,16 @@ export class TasksService {
     if (query.startDate || query.endDate) {
       if (query.startDate && query.endDate) {
         filters['createdAt'] = {
-          gte: query.startDate,
-          lte: query.endDate,
+          gte: new Date(query.startDate),
+          lte: new Date(query.endDate),
         };
       } else if (query.startDate) {
         filters['createdAt'] = {
-          gte: query.startDate,
+          gte: new Date(query.startDate),
         };
       } else if (query.endDate) {
         filters['createdAt'] = {
-          lte: query.endDate,
+          lte: new Date(query.endDate),
         };
       }
     }
@@ -62,16 +62,16 @@ export class TasksService {
     if (query.startDueDate || query.endDueDate) {
       if (query.startDueDate && query.endDueDate) {
         filters['dueDate'] = {
-          gte: query.startDueDate,
-          lte: query.endDueDate,
+          gte: new Date(query.startDueDate),
+          lte: new Date(query.endDueDate),
         };
       } else if (query.startDueDate) {
         filters['dueDate'] = {
-          gte: query.startDueDate,
+          gte: new Date(query.startDueDate),
         };
       } else if (query.endDueDate) {
         filters['dueDate'] = {
-          lte: query.endDueDate,
+          lte: new Date(query.endDueDate),
         };
       }
     }
@@ -121,11 +121,16 @@ export class TasksService {
       filters['UserTask'] = {
         some: {
           userId: {
-            in: users.map(({ id }) => id),
+            in: filters['UserTask']
+              ? [filters['UserTask'].some.userId, ...users.map(({ id }) => id)]
+              : users.map(({ id }) => id),
           },
         },
       };
     }
+
+    const page = +query.page || 1;
+    const limit = +query.limit || 10;
 
     return this.prisma.task.findMany({
       where: filters,
@@ -142,10 +147,10 @@ export class TasksService {
           },
         },
       },
-      skip: +query.page ? (+query.page - 1) * +query.limit : 0,
-      take: +query.limit || 10,
+      skip: page ? (page - 1) * limit : 0,
+      take: limit || 10,
       orderBy: {
-        createdAt: query.orderDesc ? 'desc' : 'asc',
+        createdAt: String(query.orderDesc) === 'true' ? 'desc' : 'asc',
       },
     });
   }
@@ -298,10 +303,17 @@ export class TasksService {
       throw new BadRequestException('Task not found');
     }
 
-    await this.prisma.task.delete({
-      where: {
-        id,
-      },
-    });
+    await this.prisma.$transaction([
+      this.prisma.userTask.deleteMany({
+        where: {
+          taskId: id,
+        },
+      }),
+      this.prisma.task.delete({
+        where: {
+          id,
+        },
+      }),
+    ]);
   }
 }

@@ -9,12 +9,15 @@ import {
   Query,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
-import { CreateTaskDto } from './dto/create-task.dto';
-import { UpdateTaskDto } from './dto/update-task.dto';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { QueryTaskDto } from './dto/query-task.dto';
 import { Task } from './entities/task.entity';
-import { AnalyticsDto, QueryAnalytics } from './dto/analytics.dto';
+import {
+  AnalyticsDto,
+  QueryAnalytics,
+  QueryTaskDto,
+  CreateTaskDto,
+  UpdateTaskDto,
+} from './dto';
 import { Roles } from '@/decorators/roles.decorator';
 
 @ApiTags('tasks')

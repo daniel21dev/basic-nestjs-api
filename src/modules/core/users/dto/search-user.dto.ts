@@ -4,7 +4,9 @@ import { Type } from 'class-transformer';
 import { User } from '../entities/user.entity';
 
 export class QueryUserDto {
+  @IsOptional()
   name?: string;
+  @IsOptional()
   email?: string;
   @IsOptional()
   @IsEnum(ROLE)
