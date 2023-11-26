@@ -1,3 +1,9 @@
+# Requirements
+
+- Nodejs 18^
+- Postgresql 15^
+- Docker (optional)
+
 # How to run
 
 1. Install dependencies:

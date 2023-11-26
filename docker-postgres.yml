@@ -5,6 +5,6 @@ services:
     image: postgres
     restart: always
     environment:
-      POSTGRES_PASSWORD: setYourPasswordHere
+      POSTGRES_PASSWORD: setYourPasswordHere # use this only in local development
     ports:
       - 5432:5432
